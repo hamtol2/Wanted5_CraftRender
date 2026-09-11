@@ -4,6 +4,26 @@
 LRESULT Win32MessageHandler(
 	HWND window, UINT message, WPARAM wparam, LPARAM lparam)
 {
+	// 메시치 처리.
+	switch (message)
+	{
+		// 창 닫기 메시지 (x버튼 누르면 발생함).
+	case WM_CLOSE:
+	{
+		// 창 객체 삭제.
+		DestroyWindow(window);
+	}
+	return 0;
+
+	// 창 삭제 이벤트 처리.
+	case WM_DESTROY:
+	{
+		// 프로그램 종료 요청(종료 메시지 발행).
+		PostQuitMessage(0);
+	}
+	return 0;
+	}
+
 	return DefWindowProc(window, message, wparam, lparam);
 }
 
@@ -51,7 +71,7 @@ int LaunchApplication(HINSTANCE instance)
 
 	// 이벤트(창 메시치) 처리 루프.
 	MSG message = {};
-	while (true)
+	while (message.message != WM_QUIT)
 	{
 		// 창에 메시지가 발생한 경우의 처리.
 		if (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
