@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <Interface/IMessageHandler.h>
 #include <memory>
 #include <string>
 #include <cstdint>
@@ -9,7 +10,7 @@ namespace Craft
 	// 전방선언.
 	class Win32Window;
 
-	class Engine
+	class Engine : public IMessageHandler
 	{
 	public:
 		Engine(
@@ -24,6 +25,14 @@ namespace Craft
 
 		// 엔진 종료 함수.
 		void Quit();
+
+	protected:
+		// Inherited via IMessageHandler
+		virtual LRESULT HandleMessage(
+			HWND window, 
+			UINT message, 
+			WPARAM wparam, 
+			LPARAM lparam) override;
 
 	protected:
 		// 창 객체.
