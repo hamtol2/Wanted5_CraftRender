@@ -1,5 +1,6 @@
 ﻿#include "Engine.h"
 #include <Core/Win32Window.h>
+#include <Graphics/Renderer.h>
 
 namespace Craft
 {
@@ -8,6 +9,9 @@ namespace Craft
 	{
 		// 창 객체 생성.
 		window = std::make_unique<Win32Window>(width, height, this, title);
+
+		// 렌더러 객체 생성.
+		renderer = std::make_unique<Renderer>(*window);
 	}
 
 	Engine::~Engine()
