@@ -45,10 +45,6 @@ namespace Craft
 		int64_t previous = 0;
 
 		// Todo: 고정 프레임 처리를 위한 값.
-		const float framerate = 120.0f;
-		const float oneFrameTime = 1.0f / framerate;
-
-		timeBeginPeriod(1);
 
 		// 이벤트(창 메시치) 처리 루프.
 		MSG message = {};
@@ -65,20 +61,6 @@ namespace Craft
 			{
 				// 프레임 시간 구하기.
 				float deltaTime = GetDeltaTime(current, previous);
-				float remainingTime = oneFrameTime - deltaTime;
-
-				while (remainingTime >= 0.002f)
-				{
-					Sleep(1);
-					deltaTime = GetDeltaTime(current, previous);
-					remainingTime = oneFrameTime - deltaTime;
-				}
-
-				while (remainingTime > 0.0f)
-				{
-					deltaTime = GetDeltaTime(current, previous);
-					remainingTime = oneFrameTime - deltaTime;
-				}
 
 #if _DEBUG
 				std::cout
@@ -93,8 +75,6 @@ namespace Craft
 				previous = current;
 			}
 		}
-
-		timeEndPeriod(1);
 	}
 
 	void Engine::Quit()
