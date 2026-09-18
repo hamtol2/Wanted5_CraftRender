@@ -2,6 +2,10 @@
 #include <Core/Win32Window.h>
 #include <Graphics/Renderer.h>
 
+#if _DEBUG
+#include <iostream>
+#endif
+
 namespace Craft
 {
 	Engine::Engine(
@@ -20,6 +24,32 @@ namespace Craft
 
 	void Engine::Run()
 	{
+		// 고해상도 타이머 주파수 가져오기.
+		LARGE_INTEGER frequency;
+		QueryPerformanceFrequency(&frequency);
+
+		// 델타 타임 구하는 람다 함수.
+		auto GetDeltaTime = [&frequency](int64_t& current, int64_t& previous)
+			{
+				// 현재 시간 가져오기.
+				LARGE_INTEGER counter;
+				QueryPerformanceCounter(&counter);
+				current = counter.QuadPart;
+
+				return static_cast<float>(current - previous)
+					/ static_cast<float>(frequency.QuadPart);
+			};
+
+		// 프레임 계산을 위한 변수.
+		int64_t current = 0;
+		int64_t previous = 0;
+
+		// Todo: 고정 프레임 처리를 위한 값.
+		const float framerate = 120.0f;
+		const float oneFrameTime = 1.0f / framerate;
+
+		timeBeginPeriod(1);
+
 		// 이벤트(창 메시치) 처리 루프.
 		MSG message = {};
 		while (message.message != WM_QUIT)
@@ -33,13 +63,51 @@ namespace Craft
 			// 엔진 루프 처리 등...
 			else
 			{
+				// 프레임 시간 구하기.
+				float deltaTime = GetDeltaTime(current, previous);
+				float remainingTime = oneFrameTime - deltaTime;
 
+				while (remainingTime >= 0.002f)
+				{
+					Sleep(1);
+					deltaTime = GetDeltaTime(current, previous);
+					remainingTime = oneFrameTime - deltaTime;
+				}
+
+				while (remainingTime > 0.0f)
+				{
+					deltaTime = GetDeltaTime(current, previous);
+					remainingTime = oneFrameTime - deltaTime;
+				}
+
+#if _DEBUG
+				std::cout
+					<< "deltaTime: " << deltaTime
+					<< " | FPS: " << (1.0f / deltaTime)
+					<< "\n";
+#endif
+
+				Draw();
+
+				// 이전 시간 기록.
+				previous = current;
 			}
 		}
+
+		timeEndPeriod(1);
 	}
 
 	void Engine::Quit()
 	{
+	}
+
+	void Engine::Draw()
+	{
+		// 이벤트 전달.
+		if (renderer)
+		{
+			renderer->Draw(0.6f, 0.7f, 0.8f, 0);
+		}
 	}
 
 	LRESULT Engine::HandleMessage(

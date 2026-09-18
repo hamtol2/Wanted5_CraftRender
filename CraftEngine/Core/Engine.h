@@ -28,6 +28,10 @@ namespace Craft
 		void Quit();
 
 	protected:
+		// Draw 함수.
+		void Draw();
+
+	protected:
 		// Inherited via IMessageHandler
 		virtual LRESULT HandleMessage(
 			HWND window, 

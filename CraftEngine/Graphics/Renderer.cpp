@@ -11,26 +11,45 @@ namespace Craft
 
 		// 스왑체인 생성.
 		CreateSwapChain(window);
+
+		// 렌더 타겟 뷰 생성.
+		CreateRenderTargetView();
 	}
 	
 	Renderer::~Renderer()
 	{
 		// 리소스 해제.
-		if (device)
-		{
-			device->Release();
-			device = nullptr;
-		}
-		if (context)
-		{
-			context->Release();
-			context = nullptr;
-		}
-		if (swapChain)
-		{
-			swapChain->Release();
-			swapChain = nullptr;
-		}
+		SafeRelease(device);
+		SafeRelease(context);
+		SafeRelease(swapChain);
+		SafeRelease(renderTargetView);
+	}
+
+	void Renderer::Draw(float red, float green, float blue, uint32_t vsync)
+	{
+		BeginScene(red, green, blue);
+		DrawScene();
+		EndScene(vsync);
+	}
+
+	void Renderer::BeginScene(float red, float green, float blue)
+	{
+		// 그리기 준비.
+		// 배경 지우기 및 그리기 대상 설정.
+		context->OMSetRenderTargets(1, &renderTargetView, nullptr);
+
+		const float backgroundColor[4] = { red, green, blue, 1.0f };
+		context->ClearRenderTargetView(renderTargetView, backgroundColor);
+	}
+
+	void Renderer::DrawScene()
+	{
+	}
+
+	void Renderer::EndScene(uint32_t vsync)
+	{
+		// 프론트-백 버퍼 교환.
+		swapChain->Present(vsync, 0);
 	}
 
 	void Renderer::CreateDevices()
@@ -65,7 +84,7 @@ namespace Craft
 
 		D3D_FEATURE_LEVEL selectedFeatureLevel = {};
 
-		auto result = D3D11CreateDevice(
+		ThrowIfFailed(D3D11CreateDevice(
 			nullptr,
 			D3D_DRIVER_TYPE_HARDWARE,
 			nullptr,
@@ -76,16 +95,7 @@ namespace Craft
 			&device,
 			nullptr, //&selectedFeatureLevel,
 			&context
-		);
-
-		// 실패 확인.
-		if (FAILED(result))
-		{
-			__debugbreak();
-			MessageBoxA(
-				nullptr, "Failed to create device", "D3D Error", MB_OK
-			);
-		}
+		), L"Failed to create device");
 	}
 
 	void Renderer::CreateSwapChain(const Win32Window& window)
@@ -149,5 +159,22 @@ namespace Craft
 			factory->Release();
 			factory = nullptr;
 		}
+	}
+
+	void Renderer::CreateRenderTargetView()
+	{
+		// 백버퍼(2차원 배열-텍스처) 정보 가져오기.
+		ID3D11Texture2D* backbuffer = nullptr;
+		ThrowIfFailed(
+			swapChain->GetBuffer(0, IID_PPV_ARGS(&backbuffer)),
+			L"Failed to get back buffer from swap chain");
+
+		// 렌더 타겟 뷰 생성.
+		ThrowIfFailed(device->CreateRenderTargetView(
+			backbuffer, nullptr, &renderTargetView
+		), L"Failed to create RTV");
+
+		// 사용한 후 해제.
+		SafeRelease(backbuffer);
 	}
 }
