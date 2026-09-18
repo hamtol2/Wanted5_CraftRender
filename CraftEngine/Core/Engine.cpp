@@ -44,7 +44,12 @@ namespace Craft
 		int64_t current = 0;
 		int64_t previous = 0;
 
-		// Todo: 고정 프레임 처리를 위한 값.
+		// 고정 프레임 처리를 위한 값.
+		const float framerate = 120.0f;
+		const float oneFrameTime = 1.0f / framerate;
+
+		// 스레드 재우는 간격 설정.
+		timeBeginPeriod(1);
 
 		// 이벤트(창 메시치) 처리 루프.
 		MSG message = {};
@@ -62,6 +67,31 @@ namespace Craft
 				// 프레임 시간 구하기.
 				float deltaTime = GetDeltaTime(current, previous);
 
+				// 대기 시간 계산.
+				float remainingTime = oneFrameTime - deltaTime;
+
+				// 스레드 재우기.
+				while (remainingTime >= 0.002f)
+				{
+					// Sleep에서 0 넣을 때와 1 넣을 때 차이점.
+					Sleep(1);
+
+					// 프레임 시간 구하기.
+					deltaTime = GetDeltaTime(current, previous);
+
+					// 남은 시간 계산.
+					remainingTime = oneFrameTime - deltaTime;
+				}
+
+				while (remainingTime > 0.0f)
+				{
+					// 프레임 시간 구하기.
+					deltaTime = GetDeltaTime(current, previous);
+
+					// 남은 시간 계산.
+					remainingTime = oneFrameTime - deltaTime;
+				}
+
 #if _DEBUG
 				std::cout
 					<< "deltaTime: " << deltaTime
@@ -75,6 +105,9 @@ namespace Craft
 				previous = current;
 			}
 		}
+
+		// 스레드 간격 원상 복구.
+		timeEndPeriod(1);
 	}
 
 	void Engine::Quit()

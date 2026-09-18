@@ -14,6 +14,9 @@ namespace Craft
 
 		// 렌더 타겟 뷰 생성.
 		CreateRenderTargetView();
+
+		// 데모 버퍼 생성.
+		CreateDemoBuffers();
 	}
 	
 	Renderer::~Renderer()
@@ -23,6 +26,10 @@ namespace Craft
 		SafeRelease(context);
 		SafeRelease(swapChain);
 		SafeRelease(renderTargetView);
+		SafeRelease(vertexBuffer);
+		SafeRelease(indexBuffer);
+		SafeRelease(vertexShader);
+		SafeRelease(pixelShader);
 	}
 
 	void Renderer::Draw(float red, float green, float blue, uint32_t vsync)
@@ -176,5 +183,65 @@ namespace Craft
 
 		// 사용한 후 해제.
 		SafeRelease(backbuffer);
+	}
+
+	void Renderer::CreateDemoBuffers()
+	{
+		// Temp: 구조체 선언.
+		struct Vector3
+		{
+			float x, y, z = 0.0f;
+		};
+
+		// 삼각형을 이루는 정점 데이터(배열).
+		Vector3 vertices[] =
+		{
+			Vector3 { 0.0f, 0.5f, 0.5f },
+			Vector3 { 0.5f, -0.5f, 0.5f },
+			Vector3 { -0.5f, -0.5f, 0.5f },
+		};
+
+		// 원시 데이터를 포장해서 그래픽카드에 전달해야함.
+		// 전달 매개체가 버퍼.
+
+		// 버퍼 구성 정보.
+		D3D11_BUFFER_DESC vertexBufferDesc = {};
+		vertexBufferDesc.ByteWidth = sizeof(Vector3) * 3;
+		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+		// 버퍼에 저장할 데이터.
+		D3D11_SUBRESOURCE_DATA vertexBufferData = {};
+		vertexBufferData.pSysMem = vertices;
+
+		ThrowIfFailed(device->CreateBuffer(
+			&vertexBufferDesc,
+			&vertexBufferData,
+			&vertexBuffer
+		), L"Failed to create vertex buffer");
+
+		// 인덱스 원시 데이터 배열.
+		// 정점의 순서 - 삼각형을 구성할 인덱스 순서.
+		uint32_t indices[] = { 0, 1, 2 };
+
+		// 버퍼 구성 정보.
+		D3D11_BUFFER_DESC indexBufferDesc = {};
+		indexBufferDesc.ByteWidth = sizeof(uint32_t) * 3;
+		indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+		// 버퍼에 저장할 데이터.
+		D3D11_SUBRESOURCE_DATA indexBufferData = {};
+		indexBufferData.pSysMem = indices;
+
+		ThrowIfFailed(device->CreateBuffer(
+			&indexBufferDesc,
+			&indexBufferData,
+			&indexBuffer
+		), L"Failed to create index buffer");
+	}
+
+	void Renderer::CreateDefaultShaders()
+	{
 	}
 }

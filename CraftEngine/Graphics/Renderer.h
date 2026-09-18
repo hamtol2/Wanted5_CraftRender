@@ -43,6 +43,13 @@ namespace Craft
 		// 렌더 타겟 뷰 생성.
 		void CreateRenderTargetView();
 
+		// 데모를 위한 버퍼 생성 함수.
+		// 버퍼: 메모리 덩어리.
+		void CreateDemoBuffers();
+
+		// 기본 셰이더 생성 함수.
+		void CreateDefaultShaders();
+
 	private:
 		// 장치(그래픽카드).
 
@@ -58,5 +65,15 @@ namespace Craft
 		// 백버퍼를 대표하는 렌더 타겟.
 		// 그래픽 카드에 그릴 대상을 선정할 때 사용하는 타입.
 		ID3D11RenderTargetView* renderTargetView = nullptr;
+
+		// 정점 버퍼(VertexBuffer).
+		ID3D11Buffer* vertexBuffer = nullptr;
+
+		// 인덱스(색인) 버퍼(IndexBuffer).
+		ID3D11Buffer* indexBuffer = nullptr;
+
+		// 셰이더 관련 변수.
+		ID3D11VertexShader* vertexShader = nullptr;
+		ID3D11PixelShader* pixelShader = nullptr;
 	};
 }

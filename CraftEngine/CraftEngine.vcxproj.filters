@@ -51,4 +51,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="HLSLShaders\DefaultVS.hlsl" />
+    <FxCompile Include="HLSLShaders\DefaultPS.hlsl" />
+  </ItemGroup>
 </Project>
