@@ -74,6 +74,10 @@ namespace Craft
 
 		// 셰이더 관련 변수.
 		ID3D11VertexShader* vertexShader = nullptr;
+		
+		// 입력의 정보를 전달하는데 사용되는 객체.
+		ID3D11InputLayout* inputLayout = nullptr;
+
 		ID3D11PixelShader* pixelShader = nullptr;
 	};
 }
