@@ -50,6 +50,9 @@ namespace Craft
 		// 기본 셰이더 생성 함수.
 		void CreateDefaultShaders();
 
+		// 뷰포트 생성 함수.
+		void CreateViewport(uint32_t width, uint32_t height);
+
 	private:
 		// 장치(그래픽카드).
 
@@ -79,5 +82,8 @@ namespace Craft
 		ID3D11InputLayout* inputLayout = nullptr;
 
 		ID3D11PixelShader* pixelShader = nullptr;
+
+		// 뷰포트.
+		D3D11_VIEWPORT viewport = {};
 	};
 }
