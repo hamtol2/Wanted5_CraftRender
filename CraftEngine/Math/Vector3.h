@@ -28,6 +28,16 @@ namespace Craft
         Vector3 operator-(const Vector3& other) const;
         Vector3& operator-=(const Vector3& other);
 
+        Vector3 operator*(const Vector3& other) const;
+        Vector3 operator*(float scale) const;
+        Vector3& operator*=(const Vector3& other);
+        Vector3& operator*=(float scale);
+
+        Vector3 operator/(const Vector3& other) const;
+        Vector3 operator/(float scale) const;
+        Vector3& operator/=(const Vector3& other);
+        Vector3& operator/=(float scale);
+
     public:
         float x = 0.0f;
         float y = 0.0f;

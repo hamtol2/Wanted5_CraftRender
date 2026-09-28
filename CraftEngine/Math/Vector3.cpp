@@ -1,4 +1,4 @@
-#include "Vector3.h"
+﻿#include "Vector3.h"
 #include "MathDefines.h"
 #include <cmath>
 #include <cassert>
@@ -96,6 +96,82 @@ namespace Craft
 		x -= other.x;
 		y -= other.y;
 		z -= other.z;
+		return *this;
+	}
+
+	Vector3 Vector3::operator*(const Vector3& other) const
+	{
+		return Vector3(x * other.x, y * other.y, z * other.z);
+	}
+
+	Vector3 Vector3::operator*(float scale) const
+	{
+		return Vector3(x * scale, y * scale, z * scale);
+	}
+
+	Vector3& Vector3::operator*=(const Vector3& other)
+	{
+		x *= other.x;
+		y *= other.y;
+		z *= other.z;
+		return *this;
+	}
+
+	Vector3& Vector3::operator*=(float scale)
+	{
+		x *= scale;
+		y *= scale;
+		z *= scale;
+		return *this;
+	}
+
+	Vector3 Vector3::operator/(const Vector3& other) const
+	{
+		if (std::abs(other.x) <= KindaSmallNumber
+			|| std::abs(other.y) <= KindaSmallNumber
+			|| std::abs(other.z) <= KindaSmallNumber)
+		{
+			assert(false && "other.x, other.y and other.z should not be near 0");
+			return Vector3::Zero;
+		}
+		return Vector3(x / other.x, y / other.y, z / other.z);
+	}
+
+	Vector3 Vector3::operator/(float scale) const
+	{
+		if (std::abs(scale) <= KindaSmallNumber)
+		{
+			assert(false && "scale should not be near 0");
+			return Vector3::Zero;
+		}
+		return Vector3(x / scale, y / scale, z / scale);
+	}
+
+	Vector3& Vector3::operator/=(const Vector3& other)
+	{
+		if (std::abs(other.x) <= KindaSmallNumber
+			|| std::abs(other.y) <= KindaSmallNumber
+			|| std::abs(other.z) <= KindaSmallNumber)
+		{
+			assert(false && "other.x, other.y and other.z should not be near 0");
+			return *this;
+		}
+		x /= other.x;
+		y /= other.y;
+		z /= other.z;
+		return *this;
+	}
+
+	Vector3& Vector3::operator/=(float scale)
+	{
+		if (std::abs(scale) <= KindaSmallNumber)
+		{
+			assert(false && "scale should not be near 0");
+			return *this;
+		}
+		x /= scale;
+		y /= scale;
+		z /= scale;
 		return *this;
 	}
 }
