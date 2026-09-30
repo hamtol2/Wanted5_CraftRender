@@ -93,6 +93,31 @@ namespace Craft
 		return Scale(scale, scale, scale);
 	}
 
+	Matrix4 Matrix4::RotationX(float angle)
+	{
+		return Matrix4();
+	}
+
+	Matrix4 Matrix4::RotationY(float angle)
+	{
+		return Matrix4();
+	}
+
+	Matrix4 Matrix4::RotationZ(float angle)
+	{
+		return Matrix4();
+	}
+
+	Matrix4 Matrix4::Rotation(float x, float y, float z)
+	{
+		return Matrix4();
+	}
+
+	Matrix4 Matrix4::Rotation(const Vector3& rotation)
+	{
+		return Matrix4();
+	}
+
 	Matrix4& Matrix4::operator=(const Matrix4& other)
 	{
 		memcpy(elements, other.elements, sizeof(elements));
