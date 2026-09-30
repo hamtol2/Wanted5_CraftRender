@@ -31,6 +31,9 @@ namespace Craft
 		// Draw 함수.
 		void Draw();
 
+		// 창 크기 변경 이벤트 함수.
+		void OnResize(uint32_t width, uint32_t height);
+
 	protected:
 		// Inherited via IMessageHandler
 		virtual LRESULT HandleMessage(
