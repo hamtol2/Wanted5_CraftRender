@@ -21,6 +21,17 @@ namespace Craft
 		// 이유2: 모든 상황에서 해가 있는 것이 아님.
 		static Matrix4 InverseRotation(const Matrix4& matrix);
 
+		// 변환 행렬 생성 함수.
+
+		// 이동 변환 행렬.
+		static Matrix4 Translation(float x, float y, float z);
+		static Matrix4 Translation(const Vector3& translation);
+
+		// 크기 변환 행렬.
+		static Matrix4 Scale(float x, float y, float z);
+		static Matrix4 Scale(const Vector3& scale);
+		static Matrix4 Scale(float scale);
+
 		// 내부에서 관리하는 배열의 원시 포인터 반환 함수.
 		const float* Data() const { return elements; }
 
