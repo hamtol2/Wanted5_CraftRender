@@ -1,6 +1,8 @@
 ﻿#include "Matrix4.h"
+#include "MathDefines.h"
 #include <algorithm>
 #include <cstring>
+#include <cmath>
 
 namespace Craft
 {
@@ -95,27 +97,66 @@ namespace Craft
 
 	Matrix4 Matrix4::RotationX(float angle)
 	{
-		return Matrix4();
+		// 코사인/사인 값 구하기.
+		float cosAngle = std::cos(angle * DegreesToRadians);
+		float sinAngle = std::sin(angle * DegreesToRadians);
+
+		// [ C  S ]
+		// [ -S C ]
+
+		Matrix4 m;
+		m.m00 = 1.0f;	m.m01 = 0.0f;		m.m02 = 0.0f;		m.m03 = 0.0f;
+		m.m10 = 0.0f;	m.m11 = cosAngle;	m.m12 = sinAngle;	m.m13 = 0.0f;
+		m.m20 = 0.0f;	m.m21 = -sinAngle;	m.m22 = cosAngle;	m.m23 = 0.0f;
+		m.m30 = 0.0f;	m.m31 = 0.0f;		m.m32 = 0.0f;		m.m33 = 1.0f;
+
+		return m;
 	}
 
 	Matrix4 Matrix4::RotationY(float angle)
 	{
-		return Matrix4();
+		// 코사인/사인 값 구하기.
+		float cosAngle = std::cos(angle * DegreesToRadians);
+		float sinAngle = std::sin(angle * DegreesToRadians);
+
+		// [ C  S ]
+		// [ -S C ]
+
+		Matrix4 m;
+		m.m00 = cosAngle;	m.m01 = 0.0f;	m.m02 = -sinAngle;	m.m03 = 0.0f;
+		m.m10 = 0.0f;		m.m11 = 1.0f;	m.m12 = 0.0f;		m.m13 = 0.0f;
+		m.m20 = sinAngle;	m.m21 = 0.0f;	m.m22 = cosAngle;	m.m23 = 0.0f;
+		m.m30 = 0.0f;		m.m31 = 0.0f;	m.m32 = 0.0f;		m.m33 = 1.0f;
+
+		return m;
 	}
 
 	Matrix4 Matrix4::RotationZ(float angle)
 	{
-		return Matrix4();
+		// 코사인/사인 값 구하기.
+		float cosAngle = std::cos(angle * DegreesToRadians);
+		float sinAngle = std::sin(angle * DegreesToRadians);
+
+		// [ C  S ]
+		// [ -S C ]
+		Matrix4 m;
+		m.m00 = cosAngle;	m.m01 = sinAngle;	m.m02 = 0.0f;	m.m03 = 0.0f;
+		m.m10 = -sinAngle;	m.m11 = cosAngle;	m.m12 = 0.0f;	m.m13 = 0.0f;
+		m.m20 = 0.0f;		m.m21 = 0.0f;		m.m22 = 1.0f;	m.m23 = 0.0f;
+		m.m30 = 0.0f;		m.m31 = 0.0f;		m.m32 = 0.0f;	m.m33 = 1.0f;
+
+		return m;
 	}
 
 	Matrix4 Matrix4::Rotation(float x, float y, float z)
 	{
-		return Matrix4();
+		// 무조건은 아니지만, 일반적으로 x -> y -> z축 순으로 회전을 적용.
+		return RotationX(x) * RotationY(y) * RotationZ(z);
 	}
 
 	Matrix4 Matrix4::Rotation(const Vector3& rotation)
 	{
-		return Matrix4();
+		return Rotation(rotation.x, rotation.y, rotation.z);
 	}
 
 	Matrix4& Matrix4::operator=(const Matrix4& other)

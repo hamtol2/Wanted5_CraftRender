@@ -130,6 +130,11 @@ namespace Craft
 		{
 			renderer->OnResize(width, height);
 		}
+
+		if (window)
+		{
+			window->OnResize(width, height);
+		}
 	}
 
 	LRESULT Engine::HandleMessage(
