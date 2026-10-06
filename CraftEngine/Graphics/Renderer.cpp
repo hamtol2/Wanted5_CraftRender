@@ -2,6 +2,7 @@
 #include <Core/Win32Window.h>
 #include <cstdint>
 #include <d3dcompiler.h>
+#include <cstring>
 
 namespace Craft
 {
@@ -24,6 +25,9 @@ namespace Craft
 
 		// 뷰포트 생성 및 바인딩.
 		CreateViewport(window.GetWidth(), window.GetHeight());
+
+		// 트랜스폼 버퍼 생성.
+		CreateTransformBuffer();
 	}
 
 	Renderer::~Renderer()
@@ -39,6 +43,8 @@ namespace Craft
 		SafeRelease(swapChain);
 		SafeRelease(context);
 		SafeRelease(device);
+
+		SafeRelease(transformBuffer);
 	}
 
 	void Renderer::Draw(float red, float green, float blue, uint32_t vsync)
@@ -384,5 +390,47 @@ namespace Craft
 
 		// 바인딩.
 		context->RSSetViewports(1, &viewport);
+	}
+
+	void Renderer::CreateTransformBuffer()
+	{
+		// 버퍼 구성 정보.
+		D3D11_BUFFER_DESC vertexBufferDesc = {};
+		vertexBufferDesc.ByteWidth = sizeof(Matrix4);
+		vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		vertexBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		// 버퍼에 저장할 데이터.
+		D3D11_SUBRESOURCE_DATA vertexBufferData = {};
+		vertexBufferData.pSysMem = Matrix4::Identity.Data();
+
+		ThrowIfFailed(device->CreateBuffer(
+			&vertexBufferDesc,
+			&vertexBufferData,
+			&transformBuffer
+		), L"Failed to create transform buffer");
+	}
+	
+	void Renderer::UpdateTransformBuffer(const Matrix4& worldMatrix)
+	{
+		// 버퍼에 저장할 데이터 설정 과정 처리.
+		// 아래 함수로 일반 버퍼의 데이터 변경 가능.
+		// 간헐적인(너무 자주 아닌) 데이터 갱신 시 사용 권장.
+		//context->UpdateSubresource()
+
+		// 버퍼와 연결할 리소스 생성.
+		D3D11_MAPPED_SUBRESOURCE mapped = {};
+
+		// 버퍼와 연동.
+		ThrowIfFailed(
+			context->Map(transformBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped),
+			L"Failed to map transform buffer");
+
+		// 업데이트 할 데이터 설정.
+		std::memcpy(mapped.pData, worldMatrix.Data(), sizeof(Matrix4));
+
+		// 버퍼와 연동 해제.
+		context->Unmap(transformBuffer, 0);
 	}
 }

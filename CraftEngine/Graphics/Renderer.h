@@ -3,6 +3,7 @@
 #include <Core/Core.h>
 
 // direct3d 라이브러리의 객체를 사용하기 위한 인클루드.
+#include <Math/Matrix4.h>
 #include <d3d11.h>
 #include <dxgi.h>
 #include <cstdint>
@@ -15,6 +16,13 @@ namespace Craft
 	// CPU에서 GPU로 명령을 전달.
 	class Renderer
 	{
+		// 그리기에 필요한 데이터.
+		struct RenderCommand
+		{
+			// 월드 행렬.
+			Matrix4 worldMatrix = Matrix4::Identity;
+		};
+
 	public:
 		Renderer(const Win32Window& window);
 		~Renderer();
@@ -56,6 +64,10 @@ namespace Craft
 		// 뷰포트 생성 함수.
 		void CreateViewport(uint32_t width, uint32_t height);
 
+		// 트랜스폼 상수 버퍼 생성 및 갱신 함수.
+		void CreateTransformBuffer();
+		void UpdateTransformBuffer(const Matrix4& worldMatrix);
+
 	private:
 		// 장치(그래픽카드).
 
@@ -85,6 +97,9 @@ namespace Craft
 		ID3D11InputLayout* inputLayout = nullptr;
 
 		ID3D11PixelShader* pixelShader = nullptr;
+
+		// 트랜스폼 데이터를 전달할 상수 버퍼.
+		ID3D11Buffer* transformBuffer = nullptr;
 
 		// 뷰포트.
 		D3D11_VIEWPORT viewport = {};
