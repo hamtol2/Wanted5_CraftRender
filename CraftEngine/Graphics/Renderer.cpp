@@ -3,11 +3,17 @@
 #include <cstdint>
 #include <d3dcompiler.h>
 #include <cstring>
+#include <cassert>
 
 namespace Craft
 {
 	Renderer::Renderer(const Win32Window& window)
 	{
+		assert(!instance);
+
+		// 전역 접근 변수 설정.
+		instance = this;
+
 		// Device/Context 생성.
 		CreateDevices();
 
@@ -32,6 +38,8 @@ namespace Craft
 
 	Renderer::~Renderer()
 	{
+		instance = nullptr;
+
 		// 리소스 해제.
 		SafeRelease(vertexBuffer);
 		SafeRelease(indexBuffer);
@@ -52,6 +60,16 @@ namespace Craft
 		BeginScene(red, green, blue);
 		DrawScene();
 		EndScene(vsync);
+	}
+
+	void Renderer::Submit(const Matrix4& worldMatrix)
+	{
+		// 삽입할 렌더 명령 생성.
+		RenderCommand command;
+		command.worldMatrix = worldMatrix;
+
+		// 렌더 목록에 추가.
+		renderCommandList.emplace_back(command);
 	}
 
 	void Renderer::OnResize(uint32_t width, uint32_t height)
@@ -81,6 +99,12 @@ namespace Craft
 		CreateViewport(width, height);
 	}
 
+	Renderer& Renderer::Get()
+	{
+		assert(instance);
+		return *instance;
+	}
+
 	void Renderer::BeginScene(float red, float green, float blue)
 	{
 		// 그리기 준비.
@@ -106,13 +130,23 @@ namespace Craft
 		context->VSSetShader(vertexShader, nullptr, 0);
 		context->PSSetShader(pixelShader, nullptr, 0);
 
-		// 트랜스폼 데이터 업데이트.
-		demoTransform.rotation.z += 30.0f * (1.0f / 60.0f);
-		demoTransform.Update();
-		UpdateTransformBuffer(demoTransform.GetWorldMatrix());
-
 		// 정점 셰이더에 상수 버퍼(트랜스폼 버퍼) 바인딩.
 		context->VSSetConstantBuffers(0, 1, &transformBuffer);
+
+		// 렌더 명령 처리.
+		for (const RenderCommand& command : renderCommandList)
+		{
+			DrawCommand(command);
+		}
+
+		// 렌더 명령 목록 정리.
+		renderCommandList.clear();
+	}
+
+	void Renderer::DrawCommand(const RenderCommand& command)
+	{
+		// 트랜스폼 데이터 업데이트.
+		UpdateTransformBuffer(command.worldMatrix);
 
 		// 드로우 콜.
 		context->DrawIndexed(3, 0, 0);
