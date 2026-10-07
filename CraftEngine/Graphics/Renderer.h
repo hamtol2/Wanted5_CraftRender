@@ -4,6 +4,7 @@
 
 // direct3d 라이브러리의 객체를 사용하기 위한 인클루드.
 #include <Math/Matrix4.h>
+#include <Math/Transform.h>
 #include <d3d11.h>
 #include <dxgi.h>
 #include <cstdint>
@@ -100,6 +101,9 @@ namespace Craft
 
 		// 트랜스폼 데이터를 전달할 상수 버퍼.
 		ID3D11Buffer* transformBuffer = nullptr;
+
+		// 데모 트랜스폼.
+		Transform demoTransform;
 
 		// 뷰포트.
 		D3D11_VIEWPORT viewport = {};

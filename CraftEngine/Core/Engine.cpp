@@ -75,10 +75,10 @@ namespace Craft
 				{
 					// Sleep에서 0 넣을 때와 1 넣을 때 차이점.
 					Sleep(1);
-
+				
 					// 프레임 시간 구하기.
 					deltaTime = GetDeltaTime(current, previous);
-
+				
 					// 남은 시간 계산.
 					remainingTime = oneFrameTime - deltaTime;
 				}

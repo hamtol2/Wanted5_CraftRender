@@ -106,6 +106,14 @@ namespace Craft
 		context->VSSetShader(vertexShader, nullptr, 0);
 		context->PSSetShader(pixelShader, nullptr, 0);
 
+		// 트랜스폼 데이터 업데이트.
+		demoTransform.rotation.z += 30.0f * (1.0f / 60.0f);
+		demoTransform.Update();
+		UpdateTransformBuffer(demoTransform.GetWorldMatrix());
+
+		// 정점 셰이더에 상수 버퍼(트랜스폼 버퍼) 바인딩.
+		context->VSSetConstantBuffers(0, 1, &transformBuffer);
+
 		// 드로우 콜.
 		context->DrawIndexed(3, 0, 0);
 	}
