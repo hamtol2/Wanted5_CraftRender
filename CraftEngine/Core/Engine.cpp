@@ -1,6 +1,7 @@
 ﻿#include "Engine.h"
 #include <Core/Win32Window.h>
 #include <Graphics/Renderer.h>
+#include <cassert>
 
 #if _DEBUG
 #include <iostream>
@@ -11,6 +12,10 @@ namespace Craft
 	Engine::Engine(
 		uint32_t width, uint32_t height, const std::wstring title)
 	{
+		// 전역 접근 가능하도록 인스턴스 설정.
+		assert(!instance);
+		instance = this;
+
 		// 창 객체 생성.
 		window = std::make_unique<Win32Window>(width, height, this, title);
 
@@ -20,6 +25,7 @@ namespace Craft
 
 	Engine::~Engine()
 	{
+		instance = nullptr;
 	}
 
 	void Engine::Run()
@@ -53,7 +59,7 @@ namespace Craft
 
 		// 이벤트(창 메시치) 처리 루프.
 		MSG message = {};
-		while (message.message != WM_QUIT)
+		while (!isQuit && message.message != WM_QUIT)
 		{
 			// 창에 메시지가 발생한 경우의 처리.
 			if (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
@@ -99,7 +105,30 @@ namespace Craft
 					<< "\n";
 #endif
 
+				BeginPlay();
+				Tick(deltaTime);
 				Draw();
+
+				// 레벨 전환 처리.
+				if (nextLevel)
+				{
+					if (mainLevel)
+					{
+						mainLevel.reset();
+					}
+
+					mainLevel = nextLevel;
+					nextLevel.reset();
+
+					// 레벨 초기화 함수 호출.
+					mainLevel->Initialized();
+				}
+
+				// 액터 추가/삭제 처리.
+				if (mainLevel)
+				{
+					mainLevel->ProcessAddAndDestroyActors();
+				}
 
 				// 이전 시간 기록.
 				previous = current;
@@ -112,10 +141,41 @@ namespace Craft
 
 	void Engine::Quit()
 	{
+		// 종료 플래그 설정.
+		isQuit = true;
+	}
+
+	Engine& Engine::Get()
+	{
+		assert(instance);
+		return *instance;
+	}
+
+	void Engine::BeginPlay()
+	{
+		// 레벨에 이벤트 전달.
+		if (mainLevel)
+		{
+			mainLevel->BeginPlay();
+		}
+	}
+
+	void Engine::Tick(float deltaTime)
+	{
+		if (mainLevel)
+		{
+			mainLevel->Tick(deltaTime);
+		}
 	}
 
 	void Engine::Draw()
 	{
+		// 레벨의 Draw가 먼저 처리되어야 함.
+		if (mainLevel)
+		{
+			mainLevel->Draw();
+		}
+
 		// 이벤트 전달.
 		if (renderer)
 		{
