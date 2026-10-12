@@ -244,7 +244,8 @@ namespace Craft
 		swapChainDesc.BufferCount = 2;
 		swapChainDesc.OutputWindow = window.GetHandle();
 		swapChainDesc.Windowed = true;		// 창모드 실행 여부.
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+		//swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 		// 스왑체인 생성.
 		result = factory->CreateSwapChain(
