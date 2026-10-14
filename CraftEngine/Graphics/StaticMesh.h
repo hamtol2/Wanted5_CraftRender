@@ -22,6 +22,7 @@ namespace Craft
 
 		// 편의 함수.
 		static std::shared_ptr<StaticMesh> CreateTriangleMesh();
+		static std::shared_ptr<StaticMesh> CreateQuadMesh();
 
 		// Getter.
 		inline uint32_t GetIndexCount() const { return indexCount; }
