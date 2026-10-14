@@ -16,6 +16,7 @@ namespace Craft
 	// 전방선언.
 	class Win32Window;
 	class StaticMesh;
+	class Shader;
 
 	// CPU에서 GPU로 명령을 전달.
 	class Renderer
@@ -28,6 +29,9 @@ namespace Craft
 
 			// 스태틱 메시.
 			std::shared_ptr<StaticMesh> mesh;
+
+			// 셰이더.
+			std::shared_ptr<Shader> shader;
 		};
 
 	public:
@@ -40,6 +44,7 @@ namespace Craft
 		// 그리기에 필요한 데이터 제출 함수.
 		void Submit(
 			const std::shared_ptr<StaticMesh>& mesh, 
+			const std::shared_ptr<Shader>& shader,
 			const Matrix4& worldMatrix);
 
 		// 크기 변경 이벤트 함수.
@@ -76,9 +81,6 @@ namespace Craft
 		// 렌더 타겟 뷰 생성.
 		void CreateRenderTargetView();
 
-		// 기본 셰이더 생성 함수.
-		void CreateDefaultShaders();
-
 		// 뷰포트 생성 함수.
 		void CreateViewport(uint32_t width, uint32_t height);
 
@@ -105,14 +107,6 @@ namespace Craft
 		// 백버퍼를 대표하는 렌더 타겟.
 		// 그래픽 카드에 그릴 대상을 선정할 때 사용하는 타입.
 		ID3D11RenderTargetView* renderTargetView = nullptr;
-
-		// 셰이더 관련 변수.
-		ID3D11VertexShader* vertexShader = nullptr;
-		
-		// 입력의 정보를 전달하는데 사용되는 객체.
-		ID3D11InputLayout* inputLayout = nullptr;
-
-		ID3D11PixelShader* pixelShader = nullptr;
 
 		// 트랜스폼 데이터를 전달할 상수 버퍼.
 		ID3D11Buffer* transformBuffer = nullptr;
