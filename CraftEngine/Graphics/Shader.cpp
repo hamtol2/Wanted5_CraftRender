@@ -5,8 +5,13 @@
 
 namespace Craft
 {
-	Shader::Shader(const std::wstring& vertexPath, const std::wstring& pixelPath)
+	Shader::Shader(const std::wstring& shaderName)
 	{
+		// 셰이더 경로 만들기.
+		std::wstring shaderFolder = L"HLSLShaders/";
+		std::wstring vertexPath = shaderFolder + shaderName + std::wstring(L"VS.hlsl");
+		std::wstring pixelPath = shaderFolder + shaderName + std::wstring(L"PS.hlsl");
+
 		// 셰이더 컴파일 결과 저장용 객체.
 		ID3DBlob* vertexShaderObject = nullptr;
 
@@ -95,5 +100,10 @@ namespace Craft
 		context.IASetInputLayout(inputLayout);
 		context.VSSetShader(vertexShader, nullptr, 0);
 		context.PSSetShader(pixelShader, nullptr, 0);
+	}
+
+	std::shared_ptr<Shader> Shader::CreateDefaultShader()
+	{
+		return std::make_shared<Shader>(L"Default");
 	}
 }

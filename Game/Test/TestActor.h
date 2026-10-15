@@ -6,6 +6,7 @@
 namespace Craft
 {
 	class StaticMesh;
+	class Shader;
 }
 
 class TestActor : public Craft::Actor
@@ -20,8 +21,17 @@ public:
 		staticMesh = newMesh;
 	}
 
+	// 셰이더 설정 함수.
+	inline void SetShader(const std::shared_ptr<Craft::Shader>& newShader)
+	{
+		shader = newShader;
+	}
+
 private:
 	// @Temp: 액터에서 사용할 스태틱 메시.
 	std::shared_ptr<Craft::StaticMesh> staticMesh;
+
+	// @Temp: 액터에서 사용할 셰이더.
+	std::shared_ptr<Craft::Shader> shader;
 };
 
