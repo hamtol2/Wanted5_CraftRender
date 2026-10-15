@@ -1,6 +1,7 @@
 ﻿#include "TestLevel.h"
 #include "TestActor.h"
 #include <Component/TransformComponent.h>
+#include <Component/StaticMeshComponent.h>
 #include <Graphics/StaticMesh.h>
 #include <Graphics/Shader.h>
 
@@ -22,21 +23,21 @@ void TestLevel::Initialized()
 	left->GetTransform().position.x = -0.5f;
 	
 	// 액터에 스태틱 메시 설정.
-	left->SetStaticMesh(quad);
+	left->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
 
 	// 셰이더 설정.
-	left->SetShader(shader);
+	left->GetComponent<StaticMeshComponent>()->SetShader(shader);
 
 	auto right = SpawnActor<TestActor>();
 	right->GetTransform().scale = Vector3::One * 0.4f;
 	right->GetTransform().position.x = 0.5f;
 
 	// 액터에 메시 설정 - 삼각형 메시.
-	right->SetStaticMesh(triangle);
-	right->SetShader(shader);
+	right->GetComponent<StaticMeshComponent>()->SetStaticMesh(triangle);
+	right->GetComponent<StaticMeshComponent>()->SetShader(shader);
 
 	auto center = SpawnActor<TestActor>();
 	center->GetTransform().scale = Vector3::One * 0.4f;
-	center->SetStaticMesh(quad);
-	center->SetShader(shader);
+	center->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
+	center->GetComponent<StaticMeshComponent>()->SetShader(shader);
 }
