@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstring>
 #include <cmath>
+#include <cassert>
 
 namespace Craft
 {
@@ -157,6 +158,45 @@ namespace Craft
 	Matrix4 Matrix4::Rotation(const Vector3& rotation)
 	{
 		return Rotation(rotation.x, rotation.y, rotation.z);
+	}
+
+	Matrix4 Matrix4::LookAt(
+		const Vector3& eye, 
+		const Vector3& target, 
+		const Vector3& upVector)
+	{
+		// 회전 성분 구하기.
+		// -> 정규 직교 벡터들 구하기 (Foward, Right, Up).
+
+		// 카메라의 시야(앞) 방향.
+		Vector3 forward = target - eye;
+		// 카메라 위치와 바라보는 위치가 같으면 안됨.
+		assert(forward.Length() > KindaSmallNumber);
+		// 정규화(길이 1로 만들기).
+		forward = forward.Normalized();
+
+		// 앞방향과 직교(90도)하는 오른쪽 방향.
+		Vector3 right = upVector.Normalized().Cross(forward);
+		// upVector와 forward가 겹치면 안됨.
+		assert(right.Length() > KindaSmallNumber);
+		// 정규화.
+		right = right.Normalized();
+
+		// 위 방향 구하기.
+		Vector3 up = forward.Cross(right).Normalized();
+
+		// 위치 성분에 들어갈 값 계산.
+		float x = -eye.Dot(right);
+		float y = -eye.Dot(up);
+		float z = -eye.Dot(forward);
+
+		Matrix4 m;
+		m.m00 = right.x;	m.m01 = up.x;	m.m02 = forward.x;	m.m03 = 0.0f;
+		m.m10 = right.y;	m.m11 = up.y;	m.m12 = forward.y;	m.m13 = 0.0f;
+		m.m20 = right.z;	m.m21 = up.z;	m.m22 = forward.z;	m.m23 = 0.0f;
+		m.m30 = x;			m.m31 = y;		m.m32 = z;			m.m33 = 1.0f;
+
+		return m;
 	}
 
 	Matrix4& Matrix4::operator=(const Matrix4& other)
