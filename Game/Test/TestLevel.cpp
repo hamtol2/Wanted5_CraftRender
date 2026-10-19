@@ -4,6 +4,8 @@
 #include <Component/StaticMeshComponent.h>
 #include <Graphics/StaticMesh.h>
 #include <Graphics/Shader.h>
+#include <Graphics/Renderer.h>
+#include <Math/Matrix4.h>
 
 using namespace Craft;
 void TestLevel::Initialized()
@@ -21,7 +23,7 @@ void TestLevel::Initialized()
 	auto left = SpawnActor<TestActor>();
 	left->GetTransform().scale = Vector3::One * 0.4f;
 	left->GetTransform().position.x = -0.5f;
-	
+
 	// 액터에 스태틱 메시 설정.
 	left->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
 
@@ -40,4 +42,16 @@ void TestLevel::Initialized()
 	center->GetTransform().scale = Vector3::One * 0.4f;
 	center->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
 	center->GetComponent<StaticMeshComponent>()->SetShader(shader);
+}
+
+void TestLevel::Draw()
+{
+	Level::Draw();
+
+	// 뷰 행렬 제출.
+	Vector3 eye(-0.5f, 0.0f, -0.0f);
+	Vector3 target = eye + Vector3::Forward;
+	Matrix4 view = Matrix4::LookAt(eye, target, Vector3::Up);
+	
+	Renderer::Get().SubmitCamera(view);
 }

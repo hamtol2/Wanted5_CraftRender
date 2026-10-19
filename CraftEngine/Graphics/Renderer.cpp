@@ -31,6 +31,9 @@ namespace Craft
 
 		// 트랜스폼 버퍼 생성.
 		CreateTransformBuffer();
+
+		// 카메라 버퍼 생성.
+		CreateCameraBuffer();
 	}
 
 	Renderer::~Renderer()
@@ -38,12 +41,14 @@ namespace Craft
 		instance = nullptr;
 
 		// 리소스 해제.
+		SafeRelease(transformBuffer);
+		SafeRelease(cameraBuffer);
+
 		SafeRelease(renderTargetView);
+
 		SafeRelease(swapChain);
 		SafeRelease(context);
 		SafeRelease(device);
-
-		SafeRelease(transformBuffer);
 	}
 
 	void Renderer::Draw(float red, float green, float blue, uint32_t vsync)
@@ -66,6 +71,11 @@ namespace Craft
 
 		// 렌더 목록에 추가.
 		renderCommandList.emplace_back(command);
+	}
+
+	void Renderer::SubmitCamera(const Matrix4& viewMatrix)
+	{
+		cameraData.viewMatrix = viewMatrix;
 	}
 
 	void Renderer::OnResize(uint32_t width, uint32_t height)
@@ -115,6 +125,12 @@ namespace Craft
 	{
 		// 정점 셰이더에 상수 버퍼(트랜스폼 버퍼) 바인딩.
 		context->VSSetConstantBuffers(0, 1, &transformBuffer);
+
+		// 카메라 버퍼 업데이트.
+		UpdateCameraBuffer();
+
+		// 정점 셰이더에 상수 버퍼(카메라 버퍼) 바인딩.
+		context->VSSetConstantBuffers(1, 1, &cameraBuffer);
 
 		// 렌더 명령 처리.
 		for (const RenderCommand& command : renderCommandList)
@@ -334,5 +350,43 @@ namespace Craft
 
 		// 버퍼와 연동 해제.
 		context->Unmap(transformBuffer, 0);
+	}
+
+	void Renderer::CreateCameraBuffer()
+	{
+		// 버퍼 구성 정보.
+		D3D11_BUFFER_DESC bufferDesc = {};
+		bufferDesc.ByteWidth = sizeof(CameraBufferData);
+		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		// 버퍼에 저장할 데이터.
+		D3D11_SUBRESOURCE_DATA bufferData = {};
+		bufferData.pSysMem = &cameraData;
+
+		ThrowIfFailed(device->CreateBuffer(
+			&bufferDesc,
+			&bufferData,
+			&cameraBuffer
+		), L"Failed to create camera buffer");
+	}
+
+	void Renderer::UpdateCameraBuffer()
+	{
+		// 버퍼와 연결할 리소스 생성.
+		D3D11_MAPPED_SUBRESOURCE mapped = {};
+
+		// 버퍼와 연동.
+		ThrowIfFailed(
+			context->Map(cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped),
+			L"Failed to map camera buffer");
+
+		// 업데이트 할 데이터 설정.
+		//std::memcpy(mapped.pData, &cameraBuffer, sizeof(CameraBufferData));
+		std::memcpy(mapped.pData, &cameraData, sizeof(CameraBufferData));
+
+		// 버퍼와 연동 해제.
+		context->Unmap(cameraBuffer, 0);
 	}
 }
