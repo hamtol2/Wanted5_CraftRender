@@ -46,6 +46,15 @@ namespace Craft
 			const Vector3& upVector		// 위방향 벡터.
 		);
 
+		// 원근 투영 행렬 생성 함수.
+		static Matrix4 Perspective(
+			float fieldOfView,					// FOV: 세로 화각(시야각).
+			float width,						// 가로 해상도.
+			float height,						// 세로 해상도.
+			float nearDistance,					// 근평면(Near)의 거리 값.
+			float farDistance					// 원(먼)평면(Far)의 거리 값.
+		);
+
 		// 내부에서 관리하는 배열의 원시 포인터 반환 함수.
 		const float* Data() const { return elements; }
 
