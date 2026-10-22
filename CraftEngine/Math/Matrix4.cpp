@@ -231,6 +231,16 @@ namespace Craft
 		return m;
 	}
 
+	Matrix4 Matrix4::InverseTranslationRotation(
+		const Vector3& position, 
+		const Vector3& rotation)
+	{
+		// 순방향 변환 -> S x R x T.
+		// 역방향 변환 -> T^-1 x R^-1 x S^-1.
+		return Translation(position * -1.0f)
+			* InverseRotation(Rotation(rotation));
+	}
+
 	Matrix4& Matrix4::operator=(const Matrix4& other)
 	{
 		memcpy(elements, other.elements, sizeof(elements));

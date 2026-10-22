@@ -2,10 +2,14 @@
 #include "TestActor.h"
 #include <Component/TransformComponent.h>
 #include <Component/StaticMeshComponent.h>
+
+#include <Component/CameraComponent.h>
+
 #include <Graphics/StaticMesh.h>
 #include <Graphics/Shader.h>
-#include <Graphics/Renderer.h>
-#include <Math/Matrix4.h>
+//#include <Graphics/Renderer.h>
+//#include <Math/Matrix4.h>
+//#include <Core/Engine.h>
 
 using namespace Craft;
 void TestLevel::Initialized()
@@ -42,16 +46,39 @@ void TestLevel::Initialized()
 	center->GetTransform().scale = Vector3::One * 0.4f;
 	center->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
 	center->GetComponent<StaticMeshComponent>()->SetShader(shader);
+
+	// 카메라.
+	auto camera = SpawnActor<Actor>();
+	camera->AddComponent<CameraComponent>();
+	camera->GetTransform().position.z = -1.0f;
 }
 
-void TestLevel::Draw()
-{
-	Level::Draw();
-
-	// 뷰 행렬 제출.
-	Vector3 eye(-0.5f, 0.0f, -0.0f);
-	Vector3 target = eye + Vector3::Forward;
-	Matrix4 view = Matrix4::LookAt(eye, target, Vector3::Up);
-	
-	Renderer::Get().SubmitCamera(view);
-}
+//void TestLevel::Draw()
+//{
+//	Level::Draw();
+//
+//	// 화면 너비/높이 얻기.
+//	float width = static_cast<float>(Engine::Get().GetClientWidth());
+//	float height = static_cast<float>(Engine::Get().GetClientHeight());
+//
+//	if (width == 0.0f || height == 0.0f)
+//	{
+//		return;
+//	}
+//
+//	// 뷰 행렬 제출.
+//	Vector3 eye(-0.5f, 0.0f, -5.0f);
+//	Vector3 target = eye + Vector3::Forward;
+//	Matrix4 view = Matrix4::LookAt(eye, target, Vector3::Up);
+//
+//	// 투영 변환 행렬 제출.
+//	Matrix4 projection = Matrix4::Perspective(
+//		60.0f,
+//		width,
+//		height,
+//		0.1f,
+//		1000.0f
+//	);
+//	
+//	Renderer::Get().SubmitCamera(view, projection);
+//}

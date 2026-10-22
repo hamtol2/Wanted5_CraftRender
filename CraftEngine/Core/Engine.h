@@ -39,6 +39,10 @@ namespace Craft
 			nextLevel = std::make_shared<T>();
 		}
 
+		// Getter.
+		uint32_t GetClientWidth() const;
+		uint32_t GetClientHeight() const;
+
 	protected:
 
 		// BeginPlay/Tick 함수.

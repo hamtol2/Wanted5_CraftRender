@@ -73,9 +73,12 @@ namespace Craft
 		renderCommandList.emplace_back(command);
 	}
 
-	void Renderer::SubmitCamera(const Matrix4& viewMatrix)
+	void Renderer::SubmitCamera(
+		const Matrix4& viewMatrix,
+		const Matrix4& projectionMatrix)
 	{
 		cameraData.viewMatrix = viewMatrix;
+		cameraData.projectionMatrix = projectionMatrix;
 	}
 
 	void Renderer::OnResize(uint32_t width, uint32_t height)

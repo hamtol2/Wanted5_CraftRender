@@ -55,6 +55,12 @@ namespace Craft
 			float farDistance					// 원(먼)평면(Far)의 거리 값.
 		);
 
+		// 이동/회전의 역변환 행렬 생성 함수.
+		static Matrix4 InverseTranslationRotation(
+			const Vector3& position,
+			const Vector3& rotation
+		);
+
 		// 내부에서 관리하는 배열의 원시 포인터 반환 함수.
 		const float* Data() const { return elements; }
 
