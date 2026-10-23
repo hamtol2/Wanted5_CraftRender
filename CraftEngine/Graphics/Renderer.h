@@ -97,6 +97,9 @@ namespace Craft
 		// 렌더 타겟 뷰 생성.
 		void CreateRenderTargetView();
 
+		// 뎁스 스텐실 뷰 생성.
+		void CreateDepthStencilView(uint32_t width, uint32_t height);
+
 		// 뷰포트 생성 함수.
 		void CreateViewport(uint32_t width, uint32_t height);
 
@@ -127,6 +130,12 @@ namespace Craft
 		// 백버퍼를 대표하는 렌더 타겟.
 		// 그래픽 카드에 그릴 대상을 선정할 때 사용하는 타입.
 		ID3D11RenderTargetView* renderTargetView = nullptr;
+
+		// 뎁스 처리를 위한 뎁스/스텐실 버퍼.
+		ID3D11Texture2D* depthStencilBuffer = nullptr;
+
+		// 뎁스 버퍼를 그래픽카드에 전달하는 뎁스/스텐실 뷰.
+		ID3D11DepthStencilView* depthStencilView = nullptr;
 
 		// 트랜스폼 데이터를 전달할 상수 버퍼.
 		ID3D11Buffer* transformBuffer = nullptr;

@@ -21,36 +21,33 @@ void TestLevel::Initialized()
 	auto quad = StaticMesh::CreateQuadMesh();
 
 	// 셰이더 생성.
-	auto shader = Shader::CreateDefaultShader();
+	auto defaultShader = Shader::CreateDefaultShader();
+	auto yellowShader = std::make_shared<Shader>(L"Yellow");
 
 	// 액터 생성.
 	auto left = SpawnActor<TestActor>();
 	left->GetTransform().scale = Vector3::One * 0.4f;
-	left->GetTransform().position.x = -0.5f;
+	//left->GetTransform().position.x = -0.5f;
 
 	// 액터에 스태틱 메시 설정.
 	left->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
 
 	// 셰이더 설정.
-	left->GetComponent<StaticMeshComponent>()->SetShader(shader);
+	left->GetComponent<StaticMeshComponent>()->SetShader(defaultShader);
 
 	auto right = SpawnActor<TestActor>();
 	right->GetTransform().scale = Vector3::One * 0.4f;
-	right->GetTransform().position.x = 0.5f;
+	//right->GetTransform().position.x = 0.5f;
+	right->GetTransform().position.z = 1.0f;
 
 	// 액터에 메시 설정 - 삼각형 메시.
 	right->GetComponent<StaticMeshComponent>()->SetStaticMesh(triangle);
-	right->GetComponent<StaticMeshComponent>()->SetShader(shader);
-
-	auto center = SpawnActor<TestActor>();
-	center->GetTransform().scale = Vector3::One * 0.4f;
-	center->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
-	center->GetComponent<StaticMeshComponent>()->SetShader(shader);
+	right->GetComponent<StaticMeshComponent>()->SetShader(yellowShader);
 
 	// 카메라.
 	auto camera = SpawnActor<Actor>();
 	camera->AddComponent<CameraComponent>();
-	camera->GetTransform().position.z = -1.0f;
+	camera->GetTransform().position.z = -2.0f;
 }
 
 //void TestLevel::Draw()

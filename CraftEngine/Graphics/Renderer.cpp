@@ -299,6 +299,44 @@ namespace Craft
 		SafeRelease(backbuffer);
 	}
 
+	void Renderer::CreateDepthStencilView(
+		uint32_t width, 
+		uint32_t height)
+	{
+		// 뎁스/스텐실 버퍼를 생성하기 위한 설명 구조체(Descriptor).
+		/*
+		* UINT Width;
+		  UINT Height;
+		  UINT MipLevels;
+		  UINT ArraySize;
+		  DXGI_FORMAT Format;
+		  DXGI_SAMPLE_DESC SampleDesc;
+		  D3D11_USAGE Usage;
+		  UINT BindFlags;
+		  UINT CPUAccessFlags;
+		  UINT MiscFlags;
+		*/
+		D3D11_TEXTURE2D_DESC depthBufferDesc = {};
+		depthBufferDesc.Width = width;
+		depthBufferDesc.Height = height;
+		depthBufferDesc.MipLevels = 1;
+		depthBufferDesc.ArraySize = 1;
+		depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthBufferDesc.SampleDesc.Count = 1;	// 백버퍼와 동일해야함.
+		depthBufferDesc.SampleDesc.Quality = 0;	// 백버퍼와 동일해야함.
+		depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		depthBufferDesc.CPUAccessFlags = 0;
+		depthBufferDesc.MiscFlags = 0;
+
+		ThrowIfFailed(device->CreateTexture2D(
+			&depthBufferDesc,
+			nullptr,
+			&depthStencilBuffer),
+			L"Failed to create depth stencil buffer");
+
+	}
+
 	void Renderer::CreateViewport(uint32_t width, uint32_t height)
 	{
 		// 뷰포트 설정.

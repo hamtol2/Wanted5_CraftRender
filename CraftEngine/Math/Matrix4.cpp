@@ -206,6 +206,11 @@ namespace Craft
 		float nearDistance, 
 		float farDistance)
 	{
+		// 값 확인.
+		assert(fieldOfView > 0.0f && fieldOfView < 180.0f);
+		assert(width > 0.0f && height > 0.0f);
+		assert(nearDistance > 0.0f && farDistance > nearDistance);
+
 		// 화면비 (Aspect Ratio).
 		float aspect = width / height;
 
