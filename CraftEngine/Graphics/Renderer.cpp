@@ -26,6 +26,9 @@ namespace Craft
 		// 렌더 타겟 뷰 생성.
 		CreateRenderTargetView();
 
+		// 뎁스 스텐실 뷰 생성.
+		CreateDepthStencilView(window.GetWidth(), window.GetHeight());
+
 		// 뷰포트 생성 및 바인딩.
 		CreateViewport(window.GetWidth(), window.GetHeight());
 
@@ -44,6 +47,8 @@ namespace Craft
 		SafeRelease(transformBuffer);
 		SafeRelease(cameraBuffer);
 
+		SafeRelease(depthStencilBuffer);
+		SafeRelease(depthStencilView);
 		SafeRelease(renderTargetView);
 
 		SafeRelease(swapChain);
@@ -59,7 +64,7 @@ namespace Craft
 	}
 
 	void Renderer::Submit(
-		const std::shared_ptr<StaticMesh>& mesh, 
+		const std::shared_ptr<StaticMesh>& mesh,
 		const std::shared_ptr<Shader>& shader,
 		const Matrix4& worldMatrix)
 	{
@@ -84,11 +89,15 @@ namespace Craft
 	void Renderer::OnResize(uint32_t width, uint32_t height)
 	{
 		// 원래 크기 확인.
-		DXGI_SWAP_CHAIN_DESC desc = {};
-		swapChain->GetDesc(&desc);
+		//DXGI_SWAP_CHAIN_DESC desc = {};
+		//swapChain->GetDesc(&desc);
 
 		// 렌더타겟뷰 해제.
 		SafeRelease(renderTargetView);
+
+		// DSV 해제.
+		SafeRelease(depthStencilBuffer);
+		SafeRelease(depthStencilView);
 
 		// 백버퍼 크기 변경.
 		ThrowIfFailed(swapChain->ResizeBuffers(
@@ -99,10 +108,13 @@ namespace Craft
 			0
 		), L"Failed to resize back buffer");
 
-		swapChain->GetDesc(&desc);
+		//swapChain->GetDesc(&desc);
 
 		// RTV 재생성.
 		CreateRenderTargetView();
+
+		// DSV 재생성.
+		CreateDepthStencilView(width, height);
 
 		// 뷰포트 크기 재설정.
 		CreateViewport(width, height);
@@ -118,10 +130,21 @@ namespace Craft
 	{
 		// 그리기 준비.
 		// 배경 지우기 및 그리기 대상 설정.
-		context->OMSetRenderTargets(1, &renderTargetView, nullptr);
+		context->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
 
 		const float backgroundColor[4] = { red, green, blue, 1.0f };
 		context->ClearRenderTargetView(renderTargetView, backgroundColor);
+
+		// 뎁스 스텐실 값 초기화.
+		context->ClearDepthStencilView(
+			depthStencilView,
+			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+			1.0f,
+			0
+		);
+
+		// 뷰포트 설정.
+		context->RSSetViewports(1, &viewport);
 	}
 
 	void Renderer::DrawScene()
@@ -300,9 +323,11 @@ namespace Craft
 	}
 
 	void Renderer::CreateDepthStencilView(
-		uint32_t width, 
+		uint32_t width,
 		uint32_t height)
 	{
+		// [데이터 (버퍼) - 뷰(View)] -> 바인딩.
+		// 
 		// 뎁스/스텐실 버퍼를 생성하기 위한 설명 구조체(Descriptor).
 		/*
 		* UINT Width;
@@ -335,6 +360,17 @@ namespace Craft
 			&depthStencilBuffer),
 			L"Failed to create depth stencil buffer");
 
+		// 뎁스-스텐실 뷰 생성.
+		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
+		depthStencilViewDesc.Format = depthBufferDesc.Format;
+		depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		depthStencilViewDesc.Flags = 0;
+
+		ThrowIfFailed(device->CreateDepthStencilView(
+			depthStencilBuffer,
+			&depthStencilViewDesc,
+			&depthStencilView),
+			L"Failed to create depth stencil view");
 	}
 
 	void Renderer::CreateViewport(uint32_t width, uint32_t height)
@@ -370,7 +406,7 @@ namespace Craft
 			&transformBuffer
 		), L"Failed to create transform buffer");
 	}
-	
+
 	void Renderer::UpdateTransformBuffer(const Matrix4& worldMatrix)
 	{
 		// 버퍼에 저장할 데이터 설정 과정 처리.

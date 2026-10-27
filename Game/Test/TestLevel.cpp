@@ -38,7 +38,7 @@ void TestLevel::Initialized()
 	auto right = SpawnActor<TestActor>();
 	right->GetTransform().scale = Vector3::One * 0.4f;
 	//right->GetTransform().position.x = 0.5f;
-	right->GetTransform().position.z = 1.0f;
+	right->GetTransform().position.z = -1.0f;
 
 	// 액터에 메시 설정 - 삼각형 메시.
 	right->GetComponent<StaticMeshComponent>()->SetStaticMesh(triangle);
