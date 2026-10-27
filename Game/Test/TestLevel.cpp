@@ -11,10 +11,15 @@
 //#include <Math/Matrix4.h>
 //#include <Core/Engine.h>
 
+#include <Graphics/Texture.h>
+
 using namespace Craft;
 void TestLevel::Initialized()
 {
 	Level::Initialized();
+
+	// 텍스처 로드 테스트.
+	auto texture = Texture::Load("Assets/T_Checker.jpg");
 
 	// 리소스 생성.
 	auto triangle = StaticMesh::CreateTriangleMesh();
