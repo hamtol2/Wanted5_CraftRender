@@ -82,7 +82,7 @@ namespace Craft
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = width;
 		textureDesc.Height = height;
-		textureDesc.MipLevels = 0;
+		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
 		textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		textureDesc.SampleDesc.Count = 1;
@@ -111,8 +111,8 @@ namespace Craft
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.Format = textureDesc.Format;
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = 0;
-		srvDesc.Texture2D.MostDetailedMip = 1;
+		srvDesc.Texture2D.MipLevels = 1;
+		srvDesc.Texture2D.MostDetailedMip = 0;
 
 		ThrowIfFailed(device.CreateShaderResourceView(
 			texture,

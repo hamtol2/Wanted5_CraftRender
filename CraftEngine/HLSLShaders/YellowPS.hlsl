@@ -1,4 +1,17 @@
-float4 main() : SV_TARGET
+struct VSOutput
 {
-	return float4(1.0f, 1.0f, 0.0f, 1.0f);
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD;
+};
+
+// Texture.
+Texture2D diffuseTexture : register(t0);
+
+// Sampler.
+SamplerState diffuseSampler : register(s0);
+
+float4 main(VSOutput input) : SV_TARGET
+{
+    float4 diffuseColor = diffuseTexture.Sample(diffuseSampler, input.uv);
+	return diffuseColor;
 }

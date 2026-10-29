@@ -1,10 +1,10 @@
 ﻿#include "Renderer.h"
 #include "StaticMesh.h"
 #include "Shader.h"
+#include "Texture.h"
 
 #include <Core/Win32Window.h>
 #include <cstdint>
-#include <d3dcompiler.h>
 #include <cstring>
 #include <cassert>
 
@@ -66,6 +66,7 @@ namespace Craft
 	void Renderer::Submit(
 		const std::shared_ptr<StaticMesh>& mesh,
 		const std::shared_ptr<Shader>& shader,
+		const std::shared_ptr<Texture>& texture,
 		const Matrix4& worldMatrix)
 	{
 		// 삽입할 렌더 명령 생성.
@@ -73,6 +74,7 @@ namespace Craft
 		command.worldMatrix = worldMatrix;
 		command.mesh = mesh;
 		command.shader = shader;
+		command.texture = texture;
 
 		// 렌더 목록에 추가.
 		renderCommandList.emplace_back(command);
@@ -181,6 +183,12 @@ namespace Craft
 
 		// 셰이더 바인딩.
 		command.shader->Bind();
+
+		// 텍스처 바인딩.
+		if (command.texture)
+		{
+			command.texture->Bind(0);
+		}
 
 		// 트랜스폼 데이터 업데이트.
 		UpdateTransformBuffer(command.worldMatrix);
