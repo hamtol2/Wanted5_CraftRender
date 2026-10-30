@@ -3,15 +3,14 @@
 #include <Component/TransformComponent.h>
 #include <Component/StaticMeshComponent.h>
 
-#include <Component/CameraComponent.h>
+#include <Actor/CameraActor.h>
+//#include <Component/CameraComponent.h>
 
 #include <Graphics/StaticMesh.h>
 #include <Graphics/Shader.h>
-//#include <Graphics/Renderer.h>
-//#include <Math/Matrix4.h>
-//#include <Core/Engine.h>
-
 #include <Graphics/Texture.h>
+#include <Graphics/TextureManager.h>
+#include <Graphics/ShaderManager.h>
 
 using namespace Craft;
 void TestLevel::Initialized()
@@ -19,15 +18,18 @@ void TestLevel::Initialized()
 	Level::Initialized();
 
 	// 텍스처 로드 테스트.
-	auto texture = Texture::Load("Assets/T_Ironman.jpg");
+	//auto texture = Texture::Load("Assets/T_Ironman.jpg");
+	auto texture = TextureManager::Get().LoadTexture("Assets/T_Ironman.jpg");
 
 	// 리소스 생성.
 	auto triangle = StaticMesh::CreateTriangleMesh();
 	auto quad = StaticMesh::CreateQuadMesh();
 
 	// 셰이더 생성.
-	auto defaultShader = Shader::CreateDefaultShader();
-	auto yellowShader = std::make_shared<Shader>(L"Yellow");
+	//auto defaultShader = Shader::CreateDefaultShader();
+	//auto yellowShader = std::make_shared<Shader>(L"Yellow");
+	auto defaultShader = ShaderManager::Get().LoadShader(L"Default");
+	auto yellowShader = ShaderManager::Get().LoadShader(L"TextureMapping");
 
 	// 액터 생성.
 	auto left = SpawnActor<TestActor>();
@@ -53,8 +55,7 @@ void TestLevel::Initialized()
 	rightMeshComponennt->SetTexture(texture);
 
 	// 카메라.
-	auto camera = SpawnActor<Actor>();
-	camera->AddComponent<CameraComponent>();
+	auto camera = SpawnActor<CameraActor>();
 	camera->GetTransform().position.z = -2.0f;
 }
 
