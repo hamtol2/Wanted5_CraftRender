@@ -7,8 +7,7 @@
 //#include <Component/CameraComponent.h>
 
 #include <Graphics/StaticMesh.h>
-#include <Graphics/Shader.h>
-#include <Graphics/Texture.h>
+#include <Graphics/Material.h>
 #include <Graphics/TextureManager.h>
 #include <Graphics/ShaderManager.h>
 
@@ -17,19 +16,14 @@ void TestLevel::Initialized()
 {
 	Level::Initialized();
 
-	// 텍스처 로드 테스트.
-	//auto texture = Texture::Load("Assets/T_Ironman.jpg");
-	auto texture = TextureManager::Get().LoadTexture("Assets/T_Ironman.jpg");
-
 	// 리소스 생성.
 	auto triangle = StaticMesh::CreateTriangleMesh();
 	auto quad = StaticMesh::CreateQuadMesh();
 
-	// 셰이더 생성.
-	//auto defaultShader = Shader::CreateDefaultShader();
-	//auto yellowShader = std::make_shared<Shader>(L"Yellow");
-	auto defaultShader = ShaderManager::Get().LoadShader(L"Default");
-	auto yellowShader = ShaderManager::Get().LoadShader(L"TextureMapping");
+	// 머티리얼 생성.
+	auto defaultMaterial = std::make_shared<DefaultMaterial>();
+	auto textureMappingMaterial 
+		= std::make_shared<TextureMappingMaterial>("Assets/T_Ironman.jpg");
 
 	// 액터 생성.
 	auto left = SpawnActor<TestActor>();
@@ -40,8 +34,7 @@ void TestLevel::Initialized()
 	left->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
 
 	// 셰이더 설정.
-	left->GetComponent<StaticMeshComponent>()->SetShader(yellowShader);
-	left->GetComponent<StaticMeshComponent>()->SetTexture(texture);
+	left->GetComponent<StaticMeshComponent>()->SetMaterial(textureMappingMaterial);
 
 	auto right = SpawnActor<TestActor>();
 	right->GetTransform().scale = Vector3::One * 0.4f;
@@ -51,8 +44,7 @@ void TestLevel::Initialized()
 	// 액터에 메시 설정 - 삼각형 메시.
 	auto rightMeshComponennt = right->GetComponent<StaticMeshComponent>();
 	rightMeshComponennt->SetStaticMesh(triangle);
-	rightMeshComponennt->SetShader(yellowShader);
-	rightMeshComponennt->SetTexture(texture);
+	rightMeshComponennt->SetMaterial(defaultMaterial);
 
 	// 카메라.
 	auto camera = SpawnActor<CameraActor>();

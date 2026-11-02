@@ -115,6 +115,7 @@
     </ClCompile>
     <ClCompile Include="GameFramework\Actor.cpp" />
     <ClCompile Include="GameFramework\Level.cpp" />
+    <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
     <ClCompile Include="Graphics\ShaderManager.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="CraftEnginePCH.h" />
     <ClInclude Include="GameFramework\Actor.h" />
     <ClInclude Include="GameFramework\Level.h" />
+    <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\Shader.h" />
     <ClInclude Include="Graphics\ShaderManager.h" />
@@ -181,7 +183,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)HLSLShaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>    
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
