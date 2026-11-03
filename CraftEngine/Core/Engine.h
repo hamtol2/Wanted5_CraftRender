@@ -13,6 +13,7 @@ namespace Craft
 	class Renderer;
 	class ShaderManager;
 	class TextureManager;
+	class Input;
 
 	class Engine : public IMessageHandler
 	{
@@ -90,5 +91,8 @@ namespace Craft
 
 		// 텍스처 관리자.
 		std::unique_ptr<TextureManager> textureManager;
+
+		// 입력 관리자.
+		std::unique_ptr<Input> input;
 	};
 }

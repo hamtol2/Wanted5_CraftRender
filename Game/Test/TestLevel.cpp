@@ -29,22 +29,22 @@ void TestLevel::Initialized()
 	auto left = SpawnActor<TestActor>();
 	left->GetTransform().scale = Vector3::One * 0.4f;
 	left->GetTransform().position.x = -0.5f;
-
+	
 	// 액터에 스태틱 메시 설정.
 	left->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
-
+	
 	// 셰이더 설정.
 	left->GetComponent<StaticMeshComponent>()->SetMaterial(textureMappingMaterial);
 
-	auto right = SpawnActor<TestActor>();
-	right->GetTransform().scale = Vector3::One * 0.4f;
-	right->GetTransform().position.x = 0.5f;
-	right->GetTransform().position.z = -1.0f;
-
-	// 액터에 메시 설정 - 삼각형 메시.
-	auto rightMeshComponennt = right->GetComponent<StaticMeshComponent>();
-	rightMeshComponennt->SetStaticMesh(triangle);
-	rightMeshComponennt->SetMaterial(defaultMaterial);
+	//auto right = SpawnActor<TestActor>();
+	//right->GetTransform().scale = Vector3::One * 0.4f;
+	//right->GetTransform().position.x = 0.5f;
+	//right->GetTransform().position.z = -1.0f;
+	//
+	//// 액터에 메시 설정 - 삼각형 메시.
+	//auto rightMeshComponennt = right->GetComponent<StaticMeshComponent>();
+	//rightMeshComponennt->SetStaticMesh(triangle);
+	//rightMeshComponennt->SetMaterial(defaultMaterial);
 
 	// 카메라.
 	auto camera = SpawnActor<CameraActor>();

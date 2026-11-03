@@ -1,6 +1,8 @@
 ﻿#include "TestActor.h"
 #include <Component/TransformComponent.h>
 #include <Component/StaticMeshComponent.h>
+#include <Core/Input.h>
+#include <iostream>
 
 void TestActor::Initialized()
 {
@@ -16,4 +18,22 @@ void TestActor::Tick(float deltaTime)
 
 	// 회전.
 	GetTransform().rotation.z += 60.0f * deltaTime;
+
+	// W키 입력 테스트.
+	Craft::Input& input = Craft::Input::Get();
+
+	if (input.GetKeyDown('W'))
+	{
+		std::cout << "W key down\n";
+	}
+
+	if (input.GetKeyUp('W'))
+	{
+		std::cout << "W key up\n";
+	}
+
+	if (input.GetKey('W'))
+	{
+		std::cout << "W key hold\n";
+	}
 }

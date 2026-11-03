@@ -80,6 +80,13 @@ public:
 		return *instance;
 	}
 
+	// 객체 접근이 유효한지 확인.
+	static bool IsValid()
+	{
+		//return !!instance;
+		return instance != nullptr;
+	}
+
 private:
 	// 전역 변수.
 	inline static T* instance = nullptr;
