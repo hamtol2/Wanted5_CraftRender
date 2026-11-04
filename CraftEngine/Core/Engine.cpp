@@ -5,6 +5,7 @@
 #include <Graphics/ShaderManager.h>
 #include <Graphics/TextureManager.h>
 #include <cassert>
+#include <windowsx.h>
 
 #if _DEBUG
 #include <iostream>
@@ -301,6 +302,116 @@ namespace Craft
 				// 키코드 가져오기.
 				uint32_t keyCode = static_cast<uint32_t>(wparam);
 				input->OnKeyUp(keyCode);
+			}
+		}
+		return 0;
+
+		// 마우스 왼쪽 버튼 눌림 이벤트.
+		case WM_LBUTTONDOWN:
+		{
+			// 명시적으로 입력 캡처 설정.
+			// 마우스 포인터가 창을 벗어나는 경우에 포커스를 잃을 수 있는데
+			// 이걸 방지하기 위해.
+			SetCapture(window);
+
+			// 입력 객체에 이벤트 설정.
+			if (Input::IsValid())
+			{
+				input->OnMouseButtonDown(0);
+			}
+		}
+		return 0;
+
+		// 왼쪽 버튼 눌림 해제 이벤트.
+		case WM_LBUTTONUP:
+		{
+			// 캡처 해제.
+			// 모든 버튼 클릭이 해제됐는지 추가 확인이 필요할 수 있음.
+			ReleaseCapture();
+
+			// 입력 객체에 이벤트 설정.
+			if (Input::IsValid())
+			{
+				input->OnMouseButtonUp(0);
+			}
+		}
+		return 0;
+
+		// 마우스 오른쪽 버튼 눌림 이벤트.
+		case WM_RBUTTONDOWN:
+		{
+			// 명시적으로 입력 캡처 설정.
+			// 마우스 포인터가 창을 벗어나는 경우에 포커스를 잃을 수 있는데
+			// 이걸 방지하기 위해.
+			SetCapture(window);
+
+			// 입력 객체에 이벤트 설정.
+			if (Input::IsValid())
+			{
+				input->OnMouseButtonDown(1);
+			}
+		}
+		return 0;
+
+		// 오른쪽 버튼 눌림 해제 이벤트.
+		case WM_RBUTTONUP:
+		{
+			// 캡처 해제.
+			// 모든 버튼 클릭이 해제됐는지 추가 확인이 필요할 수 있음.
+			ReleaseCapture();
+
+			// 입력 객체에 이벤트 설정.
+			if (Input::IsValid())
+			{
+				input->OnMouseButtonUp(1);
+			}
+		}
+		return 0;
+
+		// 마우스 가운데(휠) 버튼 눌림 이벤트.
+		case WM_MBUTTONDOWN:
+		{
+			// 명시적으로 입력 캡처 설정.
+			// 마우스 포인터가 창을 벗어나는 경우에 포커스를 잃을 수 있는데
+			// 이걸 방지하기 위해.
+			SetCapture(window);
+
+			// 입력 객체에 이벤트 설정.
+			if (Input::IsValid())
+			{
+				input->OnMouseButtonDown(2);
+			}
+		}
+		return 0;
+
+		// 가운데(휠) 버튼 눌림 해제 이벤트.
+		case WM_MBUTTONUP:
+		{
+			// 캡처 해제.
+			// 모든 버튼 클릭이 해제됐는지 추가 확인이 필요할 수 있음.
+			ReleaseCapture();
+
+			// 입력 객체에 이벤트 설정.
+			if (Input::IsValid())
+			{
+				input->OnMouseButtonUp(2);
+			}
+		}
+		return 0;
+
+		// 마우스 이동 이벤트.
+		case WM_MOUSEMOVE:
+		{
+			if (Input::IsValid())
+			{
+				// x 좌표.
+				int x = GET_X_LPARAM(lparam);
+
+				// y 좌표.
+				int y = GET_Y_LPARAM(lparam);
+
+				// 입력에 좌표 설정.
+				input->SetMousePosition(x, y);
 			}
 		}
 		return 0;
