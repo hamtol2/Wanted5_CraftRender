@@ -2,14 +2,12 @@
 #include "TestActor.h"
 #include <Component/TransformComponent.h>
 #include <Component/StaticMeshComponent.h>
+#include <Component/CameraMovementComponent.h>
 
 #include <Actor/CameraActor.h>
-//#include <Component/CameraComponent.h>
 
 #include <Graphics/StaticMesh.h>
 #include <Graphics/Material.h>
-#include <Graphics/TextureManager.h>
-#include <Graphics/ShaderManager.h>
 
 using namespace Craft;
 void TestLevel::Initialized()
@@ -36,18 +34,19 @@ void TestLevel::Initialized()
 	// 셰이더 설정.
 	left->GetComponent<StaticMeshComponent>()->SetMaterial(textureMappingMaterial);
 
-	//auto right = SpawnActor<TestActor>();
-	//right->GetTransform().scale = Vector3::One * 0.4f;
-	//right->GetTransform().position.x = 0.5f;
-	//right->GetTransform().position.z = -1.0f;
-	//
-	//// 액터에 메시 설정 - 삼각형 메시.
-	//auto rightMeshComponennt = right->GetComponent<StaticMeshComponent>();
-	//rightMeshComponennt->SetStaticMesh(triangle);
-	//rightMeshComponennt->SetMaterial(defaultMaterial);
+	auto right = SpawnActor<TestActor>();
+	right->GetTransform().scale = Vector3::One * 0.4f;
+	right->GetTransform().position.x = 0.5f;
+	right->GetTransform().position.z = -1.0f;
+	
+	// 액터에 메시 설정 - 삼각형 메시.
+	auto rightMeshComponennt = right->GetComponent<StaticMeshComponent>();
+	rightMeshComponennt->SetStaticMesh(triangle);
+	rightMeshComponennt->SetMaterial(defaultMaterial);
 
 	// 카메라.
 	auto camera = SpawnActor<CameraActor>();
+	camera->AddComponent<CameraMovementComponent>();
 	camera->GetTransform().position.z = -2.0f;
 }
 
