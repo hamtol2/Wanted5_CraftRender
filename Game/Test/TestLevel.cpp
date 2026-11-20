@@ -20,8 +20,10 @@ void TestLevel::Initialized()
 
 	// 머티리얼 생성.
 	auto defaultMaterial = std::make_shared<DefaultMaterial>();
-	auto textureMappingMaterial 
-		= std::make_shared<TextureMappingMaterial>("Assets/T_Ironman.jpg");
+	auto textureMappingMaterial
+		= std::make_shared<TextureMappingMaterial>(
+			"Assets/Source/Textures/T_Ironman.jpg"
+		);
 
 	// 액터 생성.
 	auto left = SpawnActor<TestActor>();
