@@ -1,4 +1,4 @@
-#include "TextureImporter.h"
+﻿#include "TextureImporter.h"
 #include "Utility.h"
 #include <CraftAssets/AssetTypes.h>
 #include <fstream>
