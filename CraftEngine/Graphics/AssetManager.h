@@ -10,7 +10,7 @@
 
 namespace Craft
 {
-	class CRAFT_API AssetManager : public TGlobalAccessible<AssetManager>
+	class AssetManager : public TGlobalAccessible<AssetManager>
 	{
 	public:
 		AssetManager(std::filesystem::path root = "Assets/Imported");
