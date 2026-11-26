@@ -8,6 +8,7 @@
 
 #include <Graphics/StaticMesh.h>
 #include <Graphics/Material.h>
+#include <Graphics/AssetManager.h>
 
 using namespace Craft;
 void TestLevel::Initialized()
@@ -24,6 +25,9 @@ void TestLevel::Initialized()
 		= std::make_shared<TextureMappingMaterial>(
 			"Assets/Source/Textures/T_Ironman.jpg"
 		);
+
+	// 애셋 로드 테스트.
+	auto meshAsset = AssetManager::Get().LoadMesh("Meshes/Sphere.cmesh");
 
 	// 액터 생성.
 	auto left = SpawnActor<TestActor>();

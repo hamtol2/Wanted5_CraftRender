@@ -58,7 +58,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\;..\Includes\;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>CraftEnginePCH.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>CraftEnginePCH.h</ForcedIncludeFiles>
@@ -84,7 +84,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\;..\Includes\;</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>CraftEnginePCH.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>CraftEnginePCH.h</ForcedIncludeFiles>
@@ -116,6 +116,7 @@
     </ClCompile>
     <ClCompile Include="GameFramework\Actor.cpp" />
     <ClCompile Include="GameFramework\Level.cpp" />
+    <ClCompile Include="Graphics\AssetManager.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\Shader.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="CraftEnginePCH.h" />
     <ClInclude Include="GameFramework\Actor.h" />
     <ClInclude Include="GameFramework\Level.h" />
+    <ClInclude Include="Graphics\AssetManager.h" />
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\Shader.h" />

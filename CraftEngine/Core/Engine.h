@@ -11,6 +11,7 @@ namespace Craft
 	// 전방선언.
 	class Win32Window;
 	class Renderer;
+	class AssetManager;
 	class ShaderManager;
 	class TextureManager;
 	class Input;
@@ -85,6 +86,9 @@ namespace Craft
 
 		// 추가 요청된 레벨.
 		std::shared_ptr<Level> nextLevel;
+
+		// 애셋 관리자.
+		std::unique_ptr<AssetManager> assetManager;
 
 		// 셰이더 관리자.
 		std::unique_ptr<ShaderManager> shaderManager;
