@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <string>
 
 namespace Craft
 {
@@ -23,6 +24,11 @@ namespace Craft
 		// 편의 함수.
 		static std::shared_ptr<StaticMesh> CreateTriangleMesh();
 		static std::shared_ptr<StaticMesh> CreateQuadMesh();
+
+		// cmesh 타입의 리소스를 로드할 때 사용할 함수.
+		static std::shared_ptr<StaticMesh> LoadFromFile(
+			const std::string& path
+		);
 
 		// Getter.
 		inline uint32_t GetIndexCount() const { return indexCount; }

@@ -17,5 +17,5 @@ void TestActor::Tick(float deltaTime)
 	Actor::Tick(deltaTime);
 
 	// 회전.
-	GetTransform().rotation.z += 60.0f * deltaTime;
+	//GetTransform().rotation.z += 60.0f * deltaTime;
 }

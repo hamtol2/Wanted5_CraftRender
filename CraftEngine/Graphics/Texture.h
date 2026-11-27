@@ -22,6 +22,13 @@ namespace Craft
 	private:
 		void LoadFromFile(const std::string& path);
 
+		// 전달된 이미지 픽셀 데이터를 기반으로 GPU 리소스 생성하는 함수.
+		void LoadFromPixels(
+			const uint8_t* pixels,
+			uint32_t textureWidth, 
+			uint32_t textureHeight
+		);
+
 	private:
 		// 이미지 너비 / 높이.
 		uint32_t width = 0;

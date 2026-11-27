@@ -23,11 +23,12 @@ void TestLevel::Initialized()
 	auto defaultMaterial = std::make_shared<DefaultMaterial>();
 	auto textureMappingMaterial
 		= std::make_shared<TextureMappingMaterial>(
-			"Assets/Source/Textures/T_Ironman.jpg"
+			"Textures/T_Ironman.ctexture"
 		);
 
 	// 애셋 로드 테스트.
-	auto meshAsset = AssetManager::Get().LoadMesh("Meshes/Sphere.cmesh");
+	//auto meshAsset = AssetManager::Get().LoadMesh("Meshes/Sphere.cmesh");
+	const auto sphereMesh = StaticMesh::LoadFromFile("Meshes/Sphere.cmesh");
 
 	// 액터 생성.
 	auto left = SpawnActor<TestActor>();
@@ -35,7 +36,7 @@ void TestLevel::Initialized()
 	left->GetTransform().position.x = -0.5f;
 	
 	// 액터에 스태틱 메시 설정.
-	left->GetComponent<StaticMeshComponent>()->SetStaticMesh(quad);
+	left->GetComponent<StaticMeshComponent>()->SetStaticMesh(sphereMesh);
 	
 	// 셰이더 설정.
 	left->GetComponent<StaticMeshComponent>()->SetMaterial(textureMappingMaterial);

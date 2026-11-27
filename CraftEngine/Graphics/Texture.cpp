@@ -1,11 +1,9 @@
 ﻿#include "Texture.h"
 #include "Renderer.h"
+#include "AssetManager.h"
 #include <Core/Core.h>
 #include <cassert>
-
-// stb_image 사용을 위한 선언.
-#define STB_IMAGE_IMPLEMENTATION
-#include <ThirdParty/stb_image.h>
+#include <stdexcept>
 
 namespace Craft
 {
@@ -39,46 +37,42 @@ namespace Craft
 
 	void Texture::LoadFromFile(const std::string& path)
 	{
-		// 이미지 속성 데이터 기록용 변수.
-		int imageWidth = 0;
-		int imageHeight = 0;
-		int channelCount = 0;
-
-		// 이미지 로드해서 픽셀 데이터(배열) 저장.
-		stbi_uc* pixels = stbi_load(
-			path.c_str(),
-			&imageWidth,
-			&imageHeight,
-			&channelCount,
-			STBI_rgb_alpha
-		);
-
-		// pixels가 null이면 로드 실패.
-		if (nullptr == pixels)
+		// 커스텀 텍스처 애셋 로드.
+		const auto asset = AssetManager::Get().LoadTexture(path);
+		
+		// 로드 실패 처리.
+		if (!asset)
 		{
-			assert(false);
+			throw std::runtime_error(
+				"Failed to load texture asset: " + path
+			);
+
 			return;
 		}
 
+		// 무결성 검증(채널 수가 4개인지 확인).
+		if (asset->channels != 4)
+		{
+			throw std::runtime_error("Invalid ctexture asset");
+			return;
+		}
+
+		// D3D 리소스 생성.
+		LoadFromPixels(asset->pixels.data(), asset->width, asset->height);
+	}
+
+	void Texture::LoadFromPixels(
+		const uint8_t* pixels,
+		uint32_t textureWidth,
+		uint32_t textureHeight)
+	{
 		// 너비 / 높이 값 설정.
-		width = static_cast<uint32_t>(imageWidth);
-		height = static_cast<uint32_t>(imageHeight);
+		width = textureWidth;
+		height = textureHeight;
 
 		// D3D 텍스처 리소스 생성.
 		auto& device = Renderer::Get().GetDevice();
 
-		/*
-		* UINT Width;
-		  UINT Height;
-		  UINT MipLevels;
-		  UINT ArraySize;
-		  DXGI_FORMAT Format;
-		  DXGI_SAMPLE_DESC SampleDesc;
-		  D3D11_USAGE Usage;
-		  UINT BindFlags;
-		  UINT CPUAccessFlags;
-		  UINT MiscFlags;
-		*/
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = width;
 		textureDesc.Height = height;
@@ -101,9 +95,6 @@ namespace Craft
 			&textureData,
 			&texture);
 
-		// 이미지 로드한 메모리 해제.
-		stbi_image_free(pixels);
-
 		// 성공/실패 여부 확인.
 		ThrowIfFailed(result, L"Failed to create texture2d.");
 
@@ -121,18 +112,6 @@ namespace Craft
 
 		// 샘플러 스테이트 (Sampler).
 		// - 텍스처를 어떤 방식으로 읽을지(샘플링 할지)를 설정하는 객체.
-		/*
-		* D3D11_FILTER Filter;
-		  D3D11_TEXTURE_ADDRESS_MODE AddressU;
-		  D3D11_TEXTURE_ADDRESS_MODE AddressV;
-		  D3D11_TEXTURE_ADDRESS_MODE AddressW;
-		  FLOAT MipLODBias;
-		  UINT MaxAnisotropy;
-		  D3D11_COMPARISON_FUNC ComparisonFunc;
-		  FLOAT BorderColor[ 4 ];
-		  FLOAT MinLOD;
-		  FLOAT MaxLOD;
-		*/
 		D3D11_SAMPLER_DESC samplerDesc = {};
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
